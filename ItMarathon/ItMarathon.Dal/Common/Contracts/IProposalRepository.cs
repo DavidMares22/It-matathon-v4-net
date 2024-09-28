@@ -1,4 +1,5 @@
 ﻿using ItMarathon.Dal.Entities;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace ItMarathon.Dal.Common.Contracts;
 
@@ -12,7 +13,7 @@ public interface IProposalRepository : IRepositoryBase<Proposal>
     /// </summary>
     /// <param name="trackChanges">Indicates whether to track changes in the Entity Framework context.</param>
     /// <returns>A paginated list of Proposal entities.</returns>
-    Task<IEnumerable<Proposal>> GetProposalsAsync(bool trackChanges);
+    Task<IEnumerable<Proposal>> GetProposalsAsync(bool trackChanges , ODataQueryOptions queryOptions);
 
     /// <summary>
     /// Retrieves a Proposal entity by its ID.

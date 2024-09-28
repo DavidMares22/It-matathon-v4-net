@@ -25,9 +25,13 @@ public class ProposalsController(IProposalService proposalService, IMapper mappe
     /// <response code="200">Returns all Proposals.</response>
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<DataPage<ProposalDto>>> GetAllProposals()
+    public async Task<ActionResult<DataPage<ProposalDto>>> GetAllProposals(
+      [FromQuery(Name = "$top")] int? top,
+      [FromQuery(Name = "$skip")] int? skip,
+      [FromQuery(Name = "$filter")] string? filter,
+      [FromQuery(Name = "$orderby")] string? orderby)
     {
-        return Ok(await proposalService.GetAllProposalsAsync());
+        return Ok(await proposalService.GetAllProposalsAsync(Request));
     }
 
     /// <summary>

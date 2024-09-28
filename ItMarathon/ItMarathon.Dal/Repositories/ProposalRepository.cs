@@ -1,6 +1,7 @@
 ﻿using ItMarathon.Dal.Common.Contracts;
 using ItMarathon.Dal.Context;
 using ItMarathon.Dal.Entities;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace ItMarathon.Dal.Repositories;
@@ -8,9 +9,14 @@ namespace ItMarathon.Dal.Repositories;
 public class ProposalRepository(ApplicationDbContext repositoryContext) :
     RepositoryBase<Proposal>(repositoryContext), IProposalRepository
 {
-    public async Task<IEnumerable<Proposal>> GetProposalsAsync(bool trackChanges)
+    public async Task<IEnumerable<Proposal>> GetProposalsAsync(bool trackChanges,  ODataQueryOptions queryOptions)
     {
         IQueryable<Proposal> query = FindAll(trackChanges);
+        
+        if(queryOptions != null)
+        {
+            query = (IQueryable<Proposal>)queryOptions.ApplyTo(query);
+        }
 
         query = query
             .Include(p => p.AppUser)

@@ -14,7 +14,7 @@ public interface IProposalService
     /// Retrieves list of proposals.
     /// </summary>
     /// <returns>A task that contains a page of proposals.</returns>
-    Task<IEnumerable<ProposalDto>> GetAllProposalsAsync();
+    Task<IEnumerable<ProposalDto>> GetAllProposalsAsync(HttpRequest request);
 
     /// <summary>
     /// Retrieves a specific proposal by its unique identifier.

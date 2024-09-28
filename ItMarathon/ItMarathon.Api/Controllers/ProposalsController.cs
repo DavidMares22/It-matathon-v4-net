@@ -31,7 +31,15 @@ public class ProposalsController(IProposalService proposalService, IMapper mappe
       [FromQuery(Name = "$filter")] string? filter,
       [FromQuery(Name = "$orderby")] string? orderby)
     {
-        return Ok(await proposalService.GetAllProposalsAsync(Request));
+       var proposals = await proposalService.GetAllProposalsAsync(Request);
+
+    // Get the total count of proposals (ignoring pagination)
+    var totalProposals = await proposalService.GetProposalsCountAsync(Request);
+
+    // Wrap in DataPage
+    var pagedData = new DataPage<ProposalDto>(proposals, totalProposals);
+
+    return Ok(pagedData);
     }
 
     /// <summary>

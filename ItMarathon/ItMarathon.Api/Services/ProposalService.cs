@@ -31,6 +31,16 @@ public class ProposalService(IUnitOfWork unitOfWork, IMapper mapper, IAzureBlobS
         var proposals = await unitOfWork.Proposals.GetProposalsAsync(false, queryOptions);
         return mapper.Map<IEnumerable<ProposalDto>>(proposals);
     }
+    
+
+       /// <inheritdoc/>
+    public async Task<long> GetProposalsCountAsync(HttpRequest request)
+    {
+        var odataQueryContext = new ODataQueryContext(_edmModel, typeof(Proposal), new ODataPath());
+        var queryOptions = new ODataQueryOptions<Proposal>(odataQueryContext, request);
+        
+        return await unitOfWork.Proposals.GetProposalsCountAsync(queryOptions);
+    }
 
     /// <inheritdoc/>
     public async Task<ProposalDto> GetProposalByIdAsync(long id)

@@ -13,10 +13,36 @@ public class ProposalRepository(ApplicationDbContext repositoryContext) :
     {
         IQueryable<Proposal> query = FindAll(trackChanges);
         
-        if(queryOptions != null)
-        {
-            query = (IQueryable<Proposal>)queryOptions.ApplyTo(query);
-        }
+       
+         // Apply filtering
+    if (queryOptions.Filter != null)
+    {
+        var settings = new ODataQuerySettings();
+
+        var filteredQuery = queryOptions.Filter.ApplyTo(query, settings);
+
+        query = filteredQuery as IQueryable<Proposal> ?? query;  
+    }
+
+     if (queryOptions.OrderBy != null)
+    {
+        query = (IQueryable<Proposal>)queryOptions.OrderBy.ApplyTo(query);
+    }
+    else
+    {
+        // Default ordering, e.g., by Proposal Id ascending
+        query = query.OrderBy(p => p.Id);
+    }
+    
+    if (queryOptions.Skip != null)
+    {
+        query = query.Skip(queryOptions.Skip.Value);
+    }
+
+    if (queryOptions.Top != null)
+    {
+        query = query.Take(queryOptions.Top.Value);
+    }
 
         query = query
             .Include(p => p.AppUser)
@@ -40,6 +66,23 @@ public class ProposalRepository(ApplicationDbContext repositoryContext) :
             .ThenInclude(properties => properties.PredefinedValue)
                 .ThenInclude(prop => prop!.ParentPropertyValue)
         .SingleOrDefaultAsync();
+
+   public async Task<int> GetProposalsCountAsync(ODataQueryOptions<Proposal> queryOptions)
+{
+    IQueryable<Proposal> query = FindAll(false); 
+
+    if (queryOptions.Filter != null)
+    {
+        var settings = new ODataQuerySettings();
+
+        var filteredQuery = queryOptions.Filter.ApplyTo(query, settings);
+
+        query = filteredQuery as IQueryable<Proposal> ?? query;  
+    }
+
+    return await query.CountAsync();
+}
+
 
     public void CreateProposal(Proposal proposal) => Create(proposal);
 

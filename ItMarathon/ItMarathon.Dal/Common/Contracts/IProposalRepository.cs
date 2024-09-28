@@ -15,6 +15,9 @@ public interface IProposalRepository : IRepositoryBase<Proposal>
     /// <returns>A paginated list of Proposal entities.</returns>
     Task<IEnumerable<Proposal>> GetProposalsAsync(bool trackChanges , ODataQueryOptions queryOptions);
 
+
+   Task<int> GetProposalsCountAsync(ODataQueryOptions<Proposal> queryOptions);
+
     /// <summary>
     /// Retrieves a Proposal entity by its ID.
     /// </summary>
